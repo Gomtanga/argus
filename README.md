@@ -1,93 +1,84 @@
-# argus
+# Argus - Deep Web Research Skill 👁️
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Compatibility: OpenCode](https://img.shields.io/badge/Compatibility-OpenCode-blue.svg)]()
+[![Version](https://img.shields.io/badge/version-4.2-brightgreen.svg)]()
 
+**Argus**는 OpenCode 환경에서 작동하는 Perplexity 스타일의 심층 웹 리서치 스킬(Agent Skill)입니다. 단순한 단일 검색을 넘어, 다중 출처를 교차 검증하고 신뢰할 수 있는 종합적인 정보 수집과 분석을 자율적으로 수행합니다.
 
-## Getting started
+## 🌟 주요 특징 (Key Features)
 
-To make it easy for you to get started with GitLab, here's a list of recommended next steps.
+- **체계적인 4단계 검색 프레임워크 (4-Phase Framework)**: 광범위한 탐색부터 타겟 조사, 교차 검증, 비교 분석까지 단계별 리서치 수행
+- **엄격한 출처 검증 (Source Transparency)**: 모든 주요 주장에 대해 `[web:N]` 형태의 출처 표기 의무화 및 출처 투명성 보고서 제공
+- **정량적 데이터 지향**: 모호한 표현("빠르다")을 배제하고 구체적인 수치("150ms latency")와 벤치마크 지향
+- **다중 도구 연동**: `firecrawl` 도구군(`search`, `scrape`, `agent`, `map`)을 종합적으로 활용한 심층 데이터 추출
+- **오류 복원력 (Graceful Degradation)**: API 제한이나 검색 실패 시 유연하게 대처하는 Fallback 시스템 탑재
 
-Already a pro? Just edit this README.md and make it your own. Want to make it easy? [Use the template at the bottom](#editing-this-readme)!
+---
 
-## Add your files
+## 🚀 시작하기 (Getting Started)
 
-* [Create](https://docs.gitlab.com/user/project/repository/web_editor/#create-a-file) or [upload](https://docs.gitlab.com/user/project/repository/web_editor/#upload-a-file) files
-* [Add files using the command line](https://docs.gitlab.com/topics/git/add_files/#add-files-to-a-git-repository) or push an existing Git repository with the following command:
+### 사전 요구사항 (Prerequisites)
+- OpenCode 환경
+- **Firecrawl Tools**: `firecrawl_search`, `firecrawl_scrape`, `firecrawl_agent`, `firecrawl_map` 활성화 필수
 
+### 트리거 (Triggers)
+사용자가 다음과 같은 의도나 키워드를 사용할 때 Argus 스킬이 자동으로 개입합니다.
+> "검색해줘", "찾아줘", "조사해줘", "비교해줘", "분석해줘", "알아봐줘", "웹 검색", "리서치"
+> *(English triggers: "search", "find", "investigate", "compare", "analyze", "look up", "web search", "research")*
+
+---
+
+## 📖 작동 방식 (How it Works)
+
+Argus는 질문의 복잡도(Complexity 1~5)에 따라 최소 1회에서 최대 14회 이상의 다중 검색을 수행하여 정보의 포화 상태(Saturation)에 도달할 때까지 조사합니다.
+
+### 1. 다단계 리서치 프로세스
+1. **Phase A: 광범위 탐색 (Broad Exploration)** - 핵심 개념 및 최신 동향 파악 (1~3회 검색)
+2. **Phase B: 타겟 조사 (Targeted Investigation)** - 구현 사례, 성능 지표, 문제점 등 구체적 수치 수집 (4~6회 검색)
+3. **Phase C: 교차 검증 (Verification)** - 2개 이상의 독립된 출처를 통한 팩트 체크 및 커뮤니티 반응 확인 (7~8회 검색)
+4. **Phase D: 비교 분석 (Comparative)** - 대안 비교 및 향후 전망 분석 (9~10회 이상 검색)
+
+### 2. 최적화된 응답 모드 (Response Modes)
+사용자의 요청 성격에 따라 최적화된 포맷으로 답변을 구조화하여 제공합니다:
+- **Mode A (구현/Implementation)**: "how to", "setup" ➔ 빠른 시작, 단계별 가이드, 트러블슈팅 중심
+- **Mode B (아키텍처/Architecture)**: "how it works", "architecture" ➔ 컴포넌트 분석, 비교 표, 심층 기술 문서 중심
+- **Mode C (리서치/Research)**: "analyze", "pros cons" ➔ 요약, 심층 분석, 대안, 투명성 보고서 중심
+
+---
+
+## ⚠️ 핵심 원칙 (Core Principles)
+
+Argus 요원(Agent)은 다음 사항을 **절대 금지**합니다:
+- ❌ 검증되지 않은 사실을 확정적으로 주장
+- ❌ 단일 출처에만 의존한 중대한 의사결정/주장
+- ❌ 출처(Reference)가 없는 수치 데이터 제시
+- ❌ 오래된 정보를 최신 정보인 것처럼(예: 2022년 자료를 2025년 기준인 것처럼) 제시
+
+---
+
+## 📊 출처 투명성 보고서 (Source Transparency)
+
+모든 심층 리서치 결과(Mode B, C)에는 반드시 출처 투명성 보고서가 하단에 포함됩니다. 사용자는 어떤 수준(공식 문서, 전문가 분석, 커뮤니티)의 자료가 인용되었는지, 정보 간 충돌은 없었는지 명확히 확인할 수 있습니다.
+
+```markdown
+### 📚 Source Transparency Report
+
+#### Sources: [X] total
+- Tier 1 (Official/Academic): [count]
+- Tier 2 (Expert Analysis): [count]
+- Tier 3 (Community): [count]
+
+#### Key Sources:
+| Ref | Source | Type | Why Trusted |
+|-----|--------|------|-------------|
+| [web:1] | [Name] | Official Doc | Primary source |
 ```
-cd existing_repo
-git remote add origin https://gitlab.jiminbox.com/ParkGeonYoung/argus.git
-git branch -M main
-git push -uf origin main
-```
 
-## Integrate with your tools
+---
 
-* [Set up project integrations](https://gitlab.jiminbox.com/ParkGeonYoung/argus/-/settings/integrations)
+## 📄 License
+이 스킬은 [MIT License](LICENSE)의 적용을 받습니다.
 
-## Collaborate with your team
-
-* [Invite team members and collaborators](https://docs.gitlab.com/user/project/members/)
-* [Create a new merge request](https://docs.gitlab.com/user/project/merge_requests/creating_merge_requests/)
-* [Automatically close issues from merge requests](https://docs.gitlab.com/user/project/issues/managing_issues/#closing-issues-automatically)
-* [Enable merge request approvals](https://docs.gitlab.com/user/project/merge_requests/approvals/)
-* [Set auto-merge](https://docs.gitlab.com/user/project/merge_requests/auto_merge/)
-
-## Test and Deploy
-
-Use the built-in continuous integration in GitLab.
-
-* [Get started with GitLab CI/CD](https://docs.gitlab.com/ci/quick_start/)
-* [Analyze your code for known vulnerabilities with Static Application Security Testing (SAST)](https://docs.gitlab.com/user/application_security/sast/)
-* [Deploy to Kubernetes, Amazon EC2, or Amazon ECS using Auto Deploy](https://docs.gitlab.com/topics/autodevops/requirements/)
-* [Use pull-based deployments for improved Kubernetes management](https://docs.gitlab.com/user/clusters/agent/)
-* [Set up protected environments](https://docs.gitlab.com/ci/environments/protected_environments/)
-
-***
-
-# Editing this README
-
-When you're ready to make this README your own, just edit this file and use the handy template below (or feel free to structure it however you want - this is just a starting point!). Thanks to [makeareadme.com](https://www.makeareadme.com/) for this template.
-
-## Suggestions for a good README
-
-Every project is different, so consider which of these sections apply to yours. The sections used in the template are suggestions for most open source projects. Also keep in mind that while a README can be too long and detailed, too long is better than too short. If you think your README is too long, consider utilizing another form of documentation rather than cutting out information.
-
-## Name
-Choose a self-explaining name for your project.
-
-## Description
-Let people know what your project can do specifically. Provide context and add a link to any reference visitors might be unfamiliar with. A list of Features or a Background subsection can also be added here. If there are alternatives to your project, this is a good place to list differentiating factors.
-
-## Badges
-On some READMEs, you may see small images that convey metadata, such as whether or not all the tests are passing for the project. You can use Shields to add some to your README. Many services also have instructions for adding a badge.
-
-## Visuals
-Depending on what you are making, it can be a good idea to include screenshots or even a video (you'll frequently see GIFs rather than actual videos). Tools like ttygif can help, but check out Asciinema for a more sophisticated method.
-
-## Installation
-Within a particular ecosystem, there may be a common way of installing things, such as using Yarn, NuGet, or Homebrew. However, consider the possibility that whoever is reading your README is a novice and would like more guidance. Listing specific steps helps remove ambiguity and gets people to using your project as quickly as possible. If it only runs in a specific context like a particular programming language version or operating system or has dependencies that have to be installed manually, also add a Requirements subsection.
-
-## Usage
-Use examples liberally, and show the expected output if you can. It's helpful to have inline the smallest example of usage that you can demonstrate, while providing links to more sophisticated examples if they are too long to reasonably include in the README.
-
-## Support
-Tell people where they can go to for help. It can be any combination of an issue tracker, a chat room, an email address, etc.
-
-## Roadmap
-If you have ideas for releases in the future, it is a good idea to list them in the README.
-
-## Contributing
-State if you are open to contributions and what your requirements are for accepting them.
-
-For people who want to make changes to your project, it's helpful to have some documentation on how to get started. Perhaps there is a script that they should run or some environment variables that they need to set. Make these steps explicit. These instructions could also be useful to your future self.
-
-You can also document commands to lint the code or run tests. These steps help to ensure high code quality and reduce the likelihood that the changes inadvertently break something. Having instructions for running tests is especially helpful if it requires external setup, such as starting a Selenium server for testing in a browser.
-
-## Authors and acknowledgment
-Show your appreciation to those who have contributed to the project.
-
-## License
-For open source projects, say how it is licensed.
-
-## Project status
-If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+---
+*버전: 4.2 (최신 업데이트: API 제한 및 오류 시 Graceful Degradation 대응 모델 추가)*
