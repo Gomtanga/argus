@@ -22,6 +22,12 @@
 - OpenCode 환경
 - **Firecrawl Tools**: `firecrawl_search`, `firecrawl_scrape`, `firecrawl_agent`, `firecrawl_map` 활성화 필수
 
+### 모델 호환성 (Model Compatibility)
+Argus는 다음 모델에서 정상 작동이 검증되었습니다:
+- **GLM-5-Turbo** 모델
+- **GLM-4.7** 이상의 모델
+- **Claude Sonnet/Opus 4.5** 이상의 모델
+
 ### 트리거 (Triggers)
 사용자가 다음과 같은 의도나 키워드를 사용할 때 Argus 스킬이 자동으로 개입합니다.
 > "검색해줘", "찾아줘", "조사해줘", "비교해줘", "분석해줘", "알아봐줘", "웹 검색", "리서치"
