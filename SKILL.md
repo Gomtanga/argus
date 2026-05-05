@@ -11,7 +11,7 @@ license: MIT
 
 # Argus - Deep Web Research Skill
 
-A systematic web search skill in the style of Perplexity. Uses **Firecrawl CLI** (or Python SDK as fallback) to conduct deep research through a 4-phase framework. Supports **Hermes Agent** and **OpenCode** environments.
+A systematic web search skill in the style of Perplexity. Uses **Firecrawl CLI** (or Python SDK as fallback) to conduct deep research through a 4-phase framework with memory-guided agentic workflows. Supports **Hermes Agent** and **OpenCode** environments.
 
 ---
 
@@ -21,22 +21,34 @@ Argus uses Firecrawl for web search. Two ways to access it:
 
 ### Method 1: Firecrawl CLI (Recommended)
 
-Install the Firecrawl CLI tool:
+Install the Firecrawl CLI tool (package renamed in v2 — use `firecrawl-cli`):
 
 ```bash
-npm install -g @firecrawl/cli
-# or
-npx @firecrawl/cli
+# New package name (v2+)
+npm install -g firecrawl-cli
+
+# Or use npx for one-off use
+npx -y firecrawl-cli@latest init --all --browser
 ```
 
-Set your API key and custom endpoint:
+Authenticate with your API key:
 
 ```bash
+# Interactive login (opens browser or prompts for API key)
+firecrawl login
+
+# Login with API key directly
+firecrawl login --api-key fc-YOUR-API-KEY
+
+# Or set via environment variable
 export FIRECRAWL_API_KEY="your-api-key"
 export FIRECRAWL_BASE_URL="https://firecrawl.jiminbox.com"
+
+# Verify installation and authentication
+firecrawl --status
 ```
 
-Available CLI commands:
+#### Available CLI Commands (v1.16+)
 
 | Command | Purpose | Example |
 |---------|---------|---------|
@@ -44,6 +56,37 @@ Available CLI commands:
 | `firecrawl scrape <url>` | Extract page content | `firecrawl scrape https://example.com` |
 | `firecrawl crawl <url>` | Crawl a website | `firecrawl crawl https://docs.example.com` |
 | `firecrawl map <url>` | Map site structure | `firecrawl map https://docs.example.com` |
+| `firecrawl interact <prompt>` | Interact with scraped page (click, form) | `firecrawl interact "Search for iPhone price"` |
+| `firecrawl agent <prompt>` | AI agent for structured research | `firecrawl agent "Top 5 AI startups funding" --wait` |
+| `firecrawl credit-usage` | Check remaining credits | `firecrawl credit-usage --json` |
+| `firecrawl login` | Authenticate with API key | `firecrawl login --api-key fc-key` |
+| `firecrawl view-config` | View current configuration | `firecrawl view-config` |
+| `firecrawl --status` | Check version, auth, concurrency | `firecrawl --status` |
+
+#### Advanced CLI Options
+
+```bash
+# Search with time filters (hour/day/week/month/year)
+firecrawl search "deep learning" --tbs qdr:y
+
+# Search and auto-scrape results
+firecrawl search "AI news" --limit 10 --scrape
+
+# Filter by source and category
+firecrawl search "react hooks" --sources web,news --categories github
+
+# Scrape with clean output (remove nav/footer/ads)
+firecrawl scrape https://example.com --only-main-content
+
+# Multiple output formats
+firecrawl scrape https://example.com --format markdown,summary,links
+
+# Crawl with advanced options
+firecrawl crawl https://example.com --limit 100 --max-depth 3 --wait --progress
+
+# Agent for structured research tasks
+firecrawl agent "Compare pricing" --urls site1.com,site2.com --wait
+```
 
 Output is Markdown by default — LLM-friendly and easy to consume.
 
@@ -59,18 +102,19 @@ app = FirecrawlApp(
     api_url="https://firecrawl.jiminbox.com"
 )
 
-# Search
+# Search (returns pydantic model — use model_dump())
 result = app.search(query="term", limit=5)
-data = result.model_dump() if hasattr(result, 'model_dump') else result.__dict__
+data = result.model_dump()
 items = data.get("web", [])
 
 # Scrape
 page = app.scrape("https://example.com")
-content = page.model_dump() if hasattr(page, 'model_dump') else page.__dict__
+content = page.model_dump()
 markdown = content.get("markdown", "")
 
 # Map
 site_map = app.map(url="https://docs.example.com")
+map_data = site_map.model_dump()
 ```
 
 ---
@@ -81,6 +125,8 @@ site_map = app.map(url="https://docs.example.com")
 - **site: operator**: `site:docs.docker.com networking`
 - **Recency**: `"latest 2025 2026 trends updates"`
 - **English + Korean**: Switch between EN/KR for broader coverage
+- **Time filters**: Use `--tbs qdr:y` (year) / `qdr:m` (month) / `qdr:w` (week) for recency control
+- **Category filters**: Use `--categories github,research,pdf` to target source types
 
 ---
 
@@ -106,10 +152,12 @@ site_map = app.map(url="https://docs.example.com")
 
 ## 4-Phase Search Framework
 
+> 💡 **Modern Deep Research Insight (2026):** Static ReAct-style linear tool chains are being superseded by **memory-guided agentic workflow synthesis** (e.g., FlowSearcher, ICLR 2026). The agent should dynamically plan subgoals, adapt tool ordering per query type, and reuse past workflow patterns via hierarchical memory. The 4-phase framework below encodes this principle as a structured process.
+
 ### Phase A: Broad Exploration (1-3 times)
 ```
 A.1 Core Concepts: "[Topic] what is how it works fundamentals"
-A.2 Current State: "[Topic] 2024 2025 current state adoption"
+A.2 Current State: "[Topic] 2025 2026 current state adoption"
 A.3 Architecture: "[Topic] architecture components design"
 
 Checkpoint:
@@ -250,8 +298,11 @@ Research (C): 1 per 2-3 sentences
 | Includes specific figures, benchmarks | +1 |
 | Includes actual code, setup examples | +1 |
 | Community verification (upvotes, stars) | +0.5 |
+| Demonstrates E-E-A-T (Experience, Expertise, Authority, Trustworthiness) | +1 |
 | Content for advertising/promotional purposes | -2 |
 | Unclear date | -1 |
+
+> 📌 **E-E-A-T:** Google's Search Quality Rater Guidelines evaluate pages on **Experience, Expertise, Authoritativeness, and Trustworthiness**. First-hand experience (e.g., "I built this"), recognized expertise (e.g., official docs, academic papers), established authority (e.g., cited by peers), and trust signals (e.g., HTTPS, clear authorship, no conflict of interest) all contribute to source quality.
 
 **Below 3 points → Consider re-searching with a different query**
 
@@ -282,9 +333,10 @@ Research (C): 1 per 2-3 sentences
 | Error Type | First Action | Fallback |
 |------------|--------------|----------|
 | No results | Simplify query → Switch EN/KR | Acknowledge gap |
-| Tool failure | Retry once → Alternative tool | Built-in knowledge + limitations |
-| Rate limit | Reduce scope → Min 5 searches | State limitation notice |
+| Tool failure | Retry once → Run `firecrawl --status` to diagnose | Alternative tool |
+| Rate limit | Run `firecrawl credit-usage` to check remaining quota | Reduce scope → Min 5 searches |
 | Conflicting info | Present both + analyze reliability | Conditional statement |
+| Auth failure | Run `firecrawl view-config` → re-login with `firecrawl login` | Set env var `FIRECRAWL_API_KEY` |
 
 ---
 
@@ -315,8 +367,9 @@ Research (C): 1 per 2-3 sentences
 
 ---
 
-**Version:** 4.3
+**Version:** 4.4
 **Changelog:**
+- v4.4: Updated Firecrawl CLI to v2/firecrawl-cli package (login auth, interact, agent, --status, time filters, output format flags). Updated Python SDK to use model_dump(). Added E-E-A-T quality criterion. Added FlowSearcher methodology insight (memory-guided workflow synthesis > ReAct). Updated error handling with diagnostic commands (--status, credit-usage, view-config). Updated example years to 2025-2026.
 - v4.3: Replaced MCP with Firecrawl CLI as primary tool. Python SDK kept as fallback.
 - v4.2: Added Graceful Degradation (from argus2/full-prompt.md Part 12.2)
 - v4.1: Hermes + OpenCode compatibility. Removed hardcoded years.
