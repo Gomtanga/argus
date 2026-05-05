@@ -5,89 +5,77 @@ compatibility: opencode
 metadata:
   hermes:
     tags: [research, web-search, analysis, firecrawl]
-    related_skills: [native-mcp]
+    related_skills: []
 license: MIT
 ---
 
 # Argus - Deep Web Research Skill
 
-A systematic web search skill in the style of Perplexity. Uses Firecrawl to conduct deep research through a 4-phase framework. Supports **Hermes Agent** and **OpenCode** environments.
+A systematic web search skill in the style of Perplexity. Uses **Firecrawl CLI** (or Python SDK as fallback) to conduct deep research through a 4-phase framework. Supports **Hermes Agent** and **OpenCode** environments.
 
 ---
 
-## Environment-Specific Tool Setup
+## Tool Setup
 
-Argus uses Firecrawl for web search. The way you access Firecrawl depends on your environment:
+Argus uses Firecrawl for web search. Two ways to access it:
 
-### Option A: MCP Server (Recommended for both Hermes & OpenCode)
+### Method 1: Firecrawl CLI (Recommended)
 
-Firecrawl offers an official MCP server that registers `firecrawl_search`, `firecrawl_scrape`, etc. as first-class tools.
+Install the Firecrawl CLI tool:
 
-**Hermes** — Add to `~/.hermes/config.yaml`:
-```yaml
-mcp_servers:
-  firecrawl:
-    command: "npx"
-    args: ["-y", "@anthropic/firecrawl-mcp-server"]
-    env:
-      FIRECRAWL_API_KEY: "your-api-key"
-      FIRECRAWL_BASE_URL: "https://firecrawl.jiminbox.com"
+```bash
+npm install -g @firecrawl/cli
+# or
+npx @firecrawl/cli
 ```
 
-**OpenCode** — Add MCP server config as per OpenCode docs:
-```json
-{
-  "mcpServers": {
-    "firecrawl": {
-      "command": "npx",
-      "args": ["-y", "@anthropic/firecrawl-mcp-server"],
-      "env": {
-        "FIRECRAWL_API_KEY": "your-api-key",
-        "FIRECRAWL_BASE_URL": "https://firecrawl.jiminbox.com"
-      }
-    }
-  }
-}
+Set your API key and custom endpoint:
+
+```bash
+export FIRECRAWL_API_KEY="your-api-key"
+export FIRECRAWL_BASE_URL="https://firecrawl.jiminbox.com"
 ```
 
-After setup, the following tools become available automatically:
-```
-firecrawl_search   — General web search
-firecrawl_scrape   — Page content extraction
-firecrawl_map      — Site structure exploration
-```
+Available CLI commands:
 
-### Option B: Python SDK (Hermes only)
+| Command | Purpose | Example |
+|---------|---------|---------|
+| `firecrawl search <query>` | Web search | `firecrawl search "Python 3.13 features"` |
+| `firecrawl scrape <url>` | Extract page content | `firecrawl scrape https://example.com` |
+| `firecrawl crawl <url>` | Crawl a website | `firecrawl crawl https://docs.example.com` |
+| `firecrawl map <url>` | Map site structure | `firecrawl map https://docs.example.com` |
 
-For environments where MCP is not available (e.g. Python scripts, custom agents):
+Output is Markdown by default — LLM-friendly and easy to consume.
+
+### Method 2: Python SDK (Fallback)
+
+When CLI is not available or you need programmatic control:
 
 ```python
 from firecrawl import FirecrawlApp
 
 app = FirecrawlApp(
-    api_key=os.getenv("FIRECRAWL_API_KEY"),
-    api_url="https://firecrawl.jiminbox.com"   # custom endpoint
+    api_key="your-api-key",
+    api_url="https://firecrawl.jiminbox.com"
 )
 
 # Search
 result = app.search(query="term", limit=5)
 data = result.model_dump() if hasattr(result, 'model_dump') else result.__dict__
-items = data.get("web", [])  # list of {url, title, description}
+items = data.get("web", [])
 
-# Scrape a page
+# Scrape
 page = app.scrape("https://example.com")
 content = page.model_dump() if hasattr(page, 'model_dump') else page.__dict__
 markdown = content.get("markdown", "")
 
-# Map site structure
+# Map
 site_map = app.map(url="https://docs.example.com")
 ```
 
 ---
 
 ## Query Optimization Tips
-
-Regardless of which tool you use, these query strategies work the same:
 
 - **Level 2-3 Specificity**: `"React 18 performance optimization"` (Appropriate)
 - **site: operator**: `site:docs.docker.com networking`
@@ -327,8 +315,9 @@ Research (C): 1 per 2-3 sentences
 
 ---
 
-**Version:** 4.2
+**Version:** 4.3
 **Changelog:**
+- v4.3: Replaced MCP with Firecrawl CLI as primary tool. Python SDK kept as fallback.
 - v4.2: Added Graceful Degradation (from argus2/full-prompt.md Part 12.2)
-- v4.1: Hermes Agent + OpenCode compatibility. Added MCP setup guide. Removed hardcoded years.
+- v4.1: Hermes + OpenCode compatibility. Removed hardcoded years.
 - v4.0: Initial release (OpenCode only)
