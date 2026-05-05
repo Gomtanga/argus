@@ -1,16 +1,100 @@
 ---
 name: argus
 description: Perplexity-style deep web research skill for comprehensive, verified information gathering. Use when user needs web search, comparison, analysis, or investigation.
+compatibility: opencode
 metadata:
   hermes:
     tags: [research, web-search, analysis, firecrawl]
-    related_skills: []
+    related_skills: [native-mcp]
 license: MIT
 ---
 
 # Argus - Deep Web Research Skill
 
-A systematic web search skill in the style of Perplexity. Uses the Firecrawl SDK (installed in Hermes venv) to conduct deep research.
+A systematic web search skill in the style of Perplexity. Uses Firecrawl to conduct deep research through a 4-phase framework. Supports **Hermes Agent** and **OpenCode** environments.
+
+---
+
+## Environment-Specific Tool Setup
+
+Argus uses Firecrawl for web search. The way you access Firecrawl depends on your environment:
+
+### Option A: MCP Server (Recommended for both Hermes & OpenCode)
+
+Firecrawl offers an official MCP server that registers `firecrawl_search`, `firecrawl_scrape`, etc. as first-class tools.
+
+**Hermes** — Add to `~/.hermes/config.yaml`:
+```yaml
+mcp_servers:
+  firecrawl:
+    command: "npx"
+    args: ["-y", "@anthropic/firecrawl-mcp-server"]
+    env:
+      FIRECRAWL_API_KEY: "your-api-key"
+      FIRECRAWL_BASE_URL: "https://firecrawl.jiminbox.com"
+```
+
+**OpenCode** — Add MCP server config as per OpenCode docs:
+```json
+{
+  "mcpServers": {
+    "firecrawl": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/firecrawl-mcp-server"],
+      "env": {
+        "FIRECRAWL_API_KEY": "your-api-key",
+        "FIRECRAWL_BASE_URL": "https://firecrawl.jiminbox.com"
+      }
+    }
+  }
+}
+```
+
+After setup, the following tools become available automatically:
+```
+firecrawl_search   — General web search
+firecrawl_scrape   — Page content extraction
+firecrawl_map      — Site structure exploration
+```
+
+### Option B: Python SDK (Hermes only)
+
+For environments where MCP is not available (e.g. Python scripts, custom agents):
+
+```python
+from firecrawl import FirecrawlApp
+
+app = FirecrawlApp(
+    api_key=os.getenv("FIRECRAWL_API_KEY"),
+    api_url="https://firecrawl.jiminbox.com"   # custom endpoint
+)
+
+# Search
+result = app.search(query="term", limit=5)
+data = result.model_dump() if hasattr(result, 'model_dump') else result.__dict__
+items = data.get("web", [])  # list of {url, title, description}
+
+# Scrape a page
+page = app.scrape("https://example.com")
+content = page.model_dump() if hasattr(page, 'model_dump') else page.__dict__
+markdown = content.get("markdown", "")
+
+# Map site structure
+site_map = app.map(url="https://docs.example.com")
+```
+
+---
+
+## Query Optimization Tips
+
+Regardless of which tool you use, these query strategies work the same:
+
+- **Level 2-3 Specificity**: `"React 18 performance optimization"` (Appropriate)
+- **site: operator**: `site:docs.docker.com networking`
+- **Recency**: `"latest 2025 2026 trends updates"`
+- **English + Korean**: Switch between EN/KR for broader coverage
+
+---
 
 ## Core Principles
 
@@ -28,52 +112,6 @@ A systematic web search skill in the style of Perplexity. Uses the Firecrawl SDK
 ❌ Making major claims based on a single source
 ❌ Presenting numerical data without a source
 ❌ Presenting outdated information as current
-```
-
----
-
-## Tool Usage
-
-All Firecrawl calls use the Python SDK: `from firecrawl import FirecrawlApp`
-
-```python
-app = FirecrawlApp(
-    api_key=os.getenv("FIRECRAWL_API_KEY"),
-    api_url="https://firecrawl.jiminbox.com"
-)
-```
-
-### app.search() (Primary Search)
-```
-Purpose: General web search
-Format: app.search(query="term", limit=5) → .model_dump()["web"]
-Usage: The fundamental tool for information gathering
-
-Query Optimization:
-- Level 2-3 Specificity: "React 18 performance optimization" (Appropriate)
-- site: operator: site:docs.docker.com networking
-- Recency: "latest 2025 2026 trends updates"
-```
-
-### app.scrape() (Page Extraction)
-```
-Purpose: Extract content from a specific URL
-Format: app.scrape("https://...") → .model_dump()["markdown"]
-Usage: Deep analysis of important pages from search results
-```
-
-### app.search() multi-query (Complex Gathering)
-```
-Purpose: Complex multi-source information gathering via repeated searches
-Format: app.search(query="specific sub-topic", limit=5)
-Usage: For complex research that requires multiple targeted searches
-```
-
-### app.map() (Site Structure)
-```
-Purpose: Understand website URL structure
-Format: app.map(url="https://...", search="keyword")
-Usage: When looking for a specific page on a large documentation site
 ```
 
 ---
@@ -239,14 +277,14 @@ Research (C): 1 per 2-3 sentences
 |-------|-----------|-------------|----------|
 | **1: Full** | All tools working | Standard protocol | Normal response structure |
 | **2: Partial** | Some tools failing / rate limited | Min 5 | State limitation, prioritize core info |
-| **3: Minimal** | Most tools failing | 0 | Built-in knowledge + strong warning (cutoff: mid-2024) |
+| **3: Minimal** | Most tools failing | 0 | Built-in knowledge + strong warning |
 | **4: None** | No external access possible | 0 | Honestly inform impossible, suggest manual search terms |
 
 ### Degradation User Notice (Level 2-4)
 
 ```markdown
 > ⚠️ **Search Limitation Notice:**
-> Due to [reason], this response is based on [N] sources / built-in knowledge (as of mid-2024).
+> Due to [reason], this response is based on [N] sources / built-in knowledge.
 > **Limitations:** [what couldn't be verified]
 > **Recommendations:** [check official docs directly, retry shortly, etc.]
 ```
@@ -292,4 +330,5 @@ Research (C): 1 per 2-3 sentences
 **Version:** 4.2
 **Changelog:**
 - v4.2: Added Graceful Degradation (from argus2/full-prompt.md Part 12.2)
-- v4.1-condensed: Original condensed version from argus2/full-prompt.md (Part 0-11)
+- v4.1: Hermes Agent + OpenCode compatibility. Added MCP setup guide. Removed hardcoded years.
+- v4.0: Initial release (OpenCode only)
