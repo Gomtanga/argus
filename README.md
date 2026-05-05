@@ -1,34 +1,76 @@
 # Argus - Deep Web Research Skill 👁️
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Compatibility: OpenCode](https://img.shields.io/badge/Compatibility-OpenCode-blue.svg)]()
+[![Compatibility: Hermes Agent + OpenCode](https://img.shields.io/badge/Compatibility-Hermes%20%2B%20OpenCode-blue.svg)]()
 [![Version](https://img.shields.io/badge/version-4.2-brightgreen.svg)]()
 
-**Argus**는 OpenCode 환경에서 작동하는 Perplexity 스타일의 심층 웹 리서치 스킬(Agent Skill)입니다. 단순한 단일 검색을 넘어, 다중 출처를 교차 검증하고 신뢰할 수 있는 종합적인 정보 수집과 분석을 자율적으로 수행합니다.
+**Argus**는 Perplexity 스타일의 심층 웹 리서치 스킬(Agent Skill)입니다. 단순한 단일 검색을 넘어, 다중 출처를 교차 검증하고 신뢰할 수 있는 종합적인 정보 수집과 분석을 자율적으로 수행합니다.
+
+> **지원 환경**: Hermes Agent ✅ | OpenCode ✅
+
+---
 
 ## 🌟 주요 특징 (Key Features)
 
 - **체계적인 4단계 검색 프레임워크 (4-Phase Framework)**: 광범위한 탐색부터 타겟 조사, 교차 검증, 비교 분석까지 단계별 리서치 수행
 - **엄격한 출처 검증 (Source Transparency)**: 모든 주요 주장에 대해 `[web:N]` 형태의 출처 표기 의무화 및 출처 투명성 보고서 제공
 - **정량적 데이터 지향**: 모호한 표현("빠르다")을 배제하고 구체적인 수치("150ms latency")와 벤치마크 지향
-- **다중 도구 연동**: `firecrawl` 도구군(`search`, `scrape`, `agent`, `map`)을 종합적으로 활용한 심층 데이터 추출
+- **Firecrawl SDK 연동**: `FirecrawlApp`(`search`, `scrape`, `map`)을 활용한 심층 데이터 추출
 - **오류 복원력 (Graceful Degradation)**: API 제한이나 검색 실패 시 유연하게 대처하는 Fallback 시스템 탑재
 
 ---
 
-## 🚀 시작하기 (Getting Started)
+## 🚀 설치 방법
 
-### 사전 요구사항 (Prerequisites)
-- OpenCode 환경
-- **Firecrawl Tools**: `firecrawl_search`, `firecrawl_scrape`, `firecrawl_agent`, `firecrawl_map` 활성화 필수
+### Hermes Agent
 
-### 모델 호환성 (Model Compatibility)
+```bash
+# Hermes 스킬 저장소에서 설치
+hermes skills install research:argus
+
+# 또는 직접 SKILL.md URL로 설치
+hermes skills install https://gitlab.jiminbox.com/ParkGeonYoung/argus/-/raw/main/SKILL.md
+
+# 설치 확인
+hermes skills list | grep argus
+```
+
+### OpenCode
+SKILL.md 파일을 OpenCode 스킬 디렉토리에 복사합니다.
+
+---
+
+## 사전 요구사항 (Prerequisites)
+
+- **Firecrawl SDK**: `pip install firecrawl-py`
+- **API 키**: Firecrawl API 키 (`FIRECRAWL_API_KEY`) 환경 변수 등록
+- **커스텀 엔드포인트** (선택): `FIRECRAWL_BASE_URL` 환경 변수 (예: `https://firecrawl.jiminbox.com`)
+
+### Python 설정 예시
+```python
+from firecrawl import FirecrawlApp
+
+app = FirecrawlApp(
+    api_key="YOUR_API_KEY",
+    api_url="https://firecrawl.jiminbox.com"  # 커스텀 엔드포인트
+)
+```
+
+---
+
+## 모델 호환성 (Model Compatibility)
+
 Argus는 다음 모델에서 정상 작동이 검증되었습니다:
-- **GLM-5-Turbo** 모델
-- **GLM-4.7** 이상의 모델
-- **Claude Sonnet/Opus 4.5** 이상의 모델
+- **DeepSeek V4 Flash** ✅ (기본)
+- **GLM-5-Turbo** ✅
+- **GLM-4.7** 이상 ✅
+- **Claude Sonnet/Opus 4.5** 이상 ✅
+- **Kimi K2.6** ✅
 
-### 트리거 (Triggers)
+---
+
+## 트리거 (Triggers)
+
 사용자가 다음과 같은 의도나 키워드를 사용할 때 Argus 스킬이 자동으로 개입합니다.
 > "검색해줘", "찾아줘", "조사해줘", "비교해줘", "분석해줘", "알아봐줘", "웹 검색", "리서치"
 > *(English triggers: "search", "find", "investigate", "compare", "analyze", "look up", "web search", "research")*
@@ -59,7 +101,7 @@ Argus 요원(Agent)은 다음 사항을 **절대 금지**합니다:
 - ❌ 검증되지 않은 사실을 확정적으로 주장
 - ❌ 단일 출처에만 의존한 중대한 의사결정/주장
 - ❌ 출처(Reference)가 없는 수치 데이터 제시
-- ❌ 오래된 정보를 최신 정보인 것처럼(예: 2022년 자료를 2025년 기준인 것처럼) 제시
+- ❌ 오래된 정보를 최신 정보인 것처럼 제시
 
 ---
 
@@ -84,7 +126,19 @@ Argus 요원(Agent)은 다음 사항을 **절대 금지**합니다:
 ---
 
 ## 📄 License
+
 이 스킬은 [MIT License](LICENSE)의 적용을 받습니다.
 
 ---
-*버전: 4.2 (최신 업데이트: API 제한 및 오류 시 Graceful Degradation 대응 모델 추가)*
+
+## 📋 변경 이력 (Changelog)
+
+| 버전 | 날짜 | 내용 |
+|------|------|------|
+| 4.2 | - | Graceful Degradation 대응 모델 추가 |
+| 4.1 | - | Hermes Agent 호환성 추가 (Frontmatter, Firecrawl SDK API 정리) |
+| 4.0 | - | 최초 공개 (OpenCode 전용) |
+
+---
+
+*버전: 4.2 (Hermes + OpenCode 호환)*

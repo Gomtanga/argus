@@ -1,13 +1,16 @@
 ---
 name: argus
-description: Perplexity-style deep web research skill for comprehensive, verified information gathering. Use when user needs web search, comparison, analysis, or investigation. Triggers: "search", "find", "investigate", "compare", "analyze", "look up", "web search", "compare", "research", "investigate"
+description: Perplexity-style deep web research skill for comprehensive, verified information gathering. Use when user needs web search, comparison, analysis, or investigation.
+metadata:
+  hermes:
+    tags: [research, web-search, analysis, firecrawl]
+    related_skills: []
 license: MIT
-compatibility: opencode
 ---
 
 # Argus - Deep Web Research Skill
 
-A systematic web search skill in the style of Perplexity. Combines with Sisyphus's firecrawl tool to conduct deep research.
+A systematic web search skill in the style of Perplexity. Uses the Firecrawl SDK (installed in Hermes venv) to conduct deep research.
 
 ## Core Principles
 
@@ -31,36 +34,45 @@ A systematic web search skill in the style of Perplexity. Combines with Sisyphus
 
 ## Tool Usage
 
-### firecrawl_search (Primary Search)
+All Firecrawl calls use the Python SDK: `from firecrawl import FirecrawlApp`
+
+```python
+app = FirecrawlApp(
+    api_key=os.getenv("FIRECRAWL_API_KEY"),
+    api_url="https://firecrawl.jiminbox.com"
+)
+```
+
+### app.search() (Primary Search)
 ```
 Purpose: General web search
-Format: {"query": "search term"}
+Format: app.search(query="term", limit=5) → .model_dump()["web"]
 Usage: The fundamental tool for information gathering
 
 Query Optimization:
 - Level 2-3 Specificity: "React 18 performance optimization" (Appropriate)
 - site: operator: site:docs.docker.com networking
-- Recency: "2024 2025 trends updates"
+- Recency: "latest 2025 2026 trends updates"
 ```
 
-### firecrawl_scrape (Page Extraction)
+### app.scrape() (Page Extraction)
 ```
 Purpose: Extract content from a specific URL
-Format: {"url": "https://..."}
+Format: app.scrape("https://...") → .model_dump()["markdown"]
 Usage: Deep analysis of important pages from search results
 ```
 
-### firecrawl_agent (Autonomous Gathering)
+### app.search() multi-query (Complex Gathering)
 ```
-Purpose: Complex multi-source autonomous gathering
-Format: {"prompt": "description of what to find"}
-Usage: For complex research that is difficult with simple searches
+Purpose: Complex multi-source information gathering via repeated searches
+Format: app.search(query="specific sub-topic", limit=5)
+Usage: For complex research that requires multiple targeted searches
 ```
 
-### firecrawl_map (Site Structure)
+### app.map() (Site Structure)
 ```
 Purpose: Understand website URL structure
-Format: {"url": "https://...", "search": "keyword"}
+Format: app.map(url="https://...", search="keyword")
 Usage: When looking for a specific page on a large documentation site
 ```
 
@@ -208,7 +220,7 @@ Research (C): 1 per 2-3 sentences
 | Criterion | Score |
 |------|------|
 | Official docs, academic materials | +2 |
-| Latest materials from 2023-2025 | +1 |
+| Latest materials from current year and previous year | +1 |
 | Includes specific figures, benchmarks | +1 |
 | Includes actual code, setup examples | +1 |
 | Community verification (upvotes, stars) | +0.5 |
