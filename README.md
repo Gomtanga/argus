@@ -1,111 +1,111 @@
-# Argus — Deep Web Research Skill 🔍
+# Argus — 심층 웹 리서치 스킬 🔍
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Compatibility: Hermes Agent + OpenCode](https://img.shields.io/badge/Compatibility-Hermes%20Agent%20|%20OpenCode-blue)]()
 [![Version](https://img.shields.io/badge/version-4.4--r1-brightgreen)]()
 
-**Argus** is a systematic deep web research skill for AI agents. It goes beyond single-shot search — using a **4-Phase Framework** to explore, investigate, cross-verify, and synthesize information from multiple sources.
+**Argus**는 AI 에이전트를 위한 체계적인 심층 웹 리서치 스킬입니다. 단순한 단일 검색을 넘어 **4단계 검색 프레임워크(4-Phase Framework)** 로 다중 출처를 탐색하고 교차 검증하여 신뢰할 수 있는 종합적인 정보를 제공합니다.
 
-Built for [Hermes Agent](https://hermes-agent.nousresearch.com) and [OpenCode](https://github.com/opencode-ai/opencode).
-
----
-
-## 🔑 Key Features
-
-- **4-Phase Search Framework:** Broad exploration → Targeted investigation → Cross-source verification → Comparative synthesis
-- **Source Transparency:** Every claim is cited as `[web:N]` with a full Source Transparency Report
-- **Quantified Evidence:** No vague claims — only specific metrics with citations
-- **3-way Firecrawl Access:** CLI (recommended) / Python SDK / Direct HTTP — works in any environment
-- **Graceful Degradation:** 4 fallback levels when search tools fail
-- **Quality Scoring:** Point-based source evaluation with E-E-A-T criteria
+[Hermes Agent](https://hermes-agent.nousresearch.com) 및 [OpenCode](https://github.com/opencode-ai/opencode)에서 사용 가능합니다.
 
 ---
 
-## 🚀 Quick Start
+## 🔑 주요 특징
+
+- **4단계 검색 프레임워크:** 광범위 탐색 → 타겟 조사 → 교차 검증 → 비교 분석
+- **출처 투명성:** 모든 주장을 `[web:N]` 형태로 인용, 출처 투명성 보고서 제공
+- **정량적 증거:** 모호한 표현 없이 구체적인 수치와 출처 기반
+- **3가지 Firecrawl 접근법:** CLI(권장) / Python SDK / Direct HTTP — 모든 환경에서 동작
+- **오류 복원력:** 검색 도구 실패 시 4단계 Fallback 시스템
+- **품질 평가:** 포인트 기반 출처 평가 + E-E-A-T 기준
+
+---
+
+## 🚀 빠른 시작
 
 ```bash
-# For Hermes Agent
+# Hermes Agent
 hermes skills install research:argus
 
-# For OpenCode
-# Copy SKILL.md and references/ to your skills directory
+# OpenCode
+# SKILL.md와 references/ 디렉토리를 스킬 디렉토리에 복사
 ```
 
-### Prerequisites
+### 사전 요구사항
 
-Argus uses [Firecrawl](https://firecrawl.dev) for web search and content extraction:
+Argus는 웹 검색과 콘텐츠 추출을 위해 [Firecrawl](https://firecrawl.dev)을 사용합니다:
 
 ```bash
-# Option 1: CLI (recommended)
+# 방법 1: CLI (권장)
 npm install -g firecrawl-cli
 firecrawl login --api-key fc-your-api-key
 
-# Option 2: Python SDK
+# 방법 2: Python SDK
 pip install firecrawl-py
 export FIRECRAWL_API_KEY="your-api-key"
 ```
 
 ---
 
-## 📖 How It Works
+## 📖 작동 방식
 
-### 4-Phase Framework
+### 4단계 검색 프레임워크
 
 ```
-Phase A: Broad Exploration  ──→  Phase B: Targeted Investigation  ──→  Phase C: Cross-Source Verification  ──→  Phase D: Comparative Synthesis
-  (1-3 searches)                 (4-6 searches)                       (7-8 searches)                           (9-10+ searches)
+Phase A: 광범위 탐색  ──→  Phase B: 타겟 조사  ──→  Phase C: 교차 검증  ──→  Phase D: 비교 분석
+  (1-3회 검색)            (4-6회 검색)              (7-8회 검색)              (9-10+회 검색)
 ```
 
-| Phase | Purpose | Key Activities |
-|-------|---------|----------------|
-| **A** | Understand landscape | Identify core concepts, current state, key players |
-| **B** | Gather specifics | Collect metrics, implementation details, common problems |
-| **C** | Verify everything | Cross-check 2+ independent sources, flag conflicts |
-| **D** | Compare & synthesize | Compare alternatives, identify gaps, outlook |
+| 단계 | 목적 | 주요 활동 |
+|------|------|-----------|
+| **A** | 전체 개념 파악 | 핵심 개념 식별, 최신 동향, 주요 플레이어 파악 |
+| **B** | 구체적 정보 수집 | 수치 데이터, 구현 세부사항, 일반적인 문제점 수집 |
+| **C** | 모든 정보 검증 | 2+ 독립 출처 교차 검증, 충돌 정보 식별 및 표기 |
+| **D** | 비교 및 종합 | 대안 비교, 정보 격차 식별, 향후 전망 |
 
-### Response Modes
+### 응답 모드
 
-| Mode | Trigger | Structure |
-|------|---------|-----------|
-| **A: Implementation** | "how to", "setup" | Quick Start → Steps → Config → Troubleshooting |
-| **B: Architecture** | "how it works", "compare" | Direct Answer → Components → Comparison → Deep Dive |
-| **C: Research** | "analyze", "recommend" | Executive Summary → Analysis → Alternatives → Roadmap |
+| 모드 | 트리거 | 구조 |
+|------|--------|------|
+| **A: 구현** | "how to", "setup" | 빠른 시작 → 단계 → 설정 → 트러블슈팅 |
+| **B: 아키텍처** | "how it works", "compare" | 직접 답변 → 구성요소 → 비교 → 심층 분석 |
+| **C: 리서치** | "analyze", "recommend" | 요약 → 분석 → 대안 → 로드맵 |
 
 ---
 
-## ⚙️ Error Handling
+## ⚙️ 오류 처리
 
-When search tools fail, Argus degrades gracefully:
+검색 도구 실패 시 단계적으로 대응합니다:
 
-| Level | Condition | Min Searches |
-|-------|-----------|-------------|
-| 1: Full | All tools working | Standard |
-| 2: Partial | Some tools failing | 5 |
-| 3: Minimal | Most tools failing | 0 (built-in knowledge) |
-| 4: None | No external access | 0 (inform user) |
+| 단계 | 상태 | 최소 검색 수 |
+|------|------|-------------|
+| 1: 정상 | 모든 도구 작동 | 기본 |
+| 2: 부분 | 일부 도구 실패 | 5회 |
+| 3: 최소 | 대부분 실패 | 0회 (내장 지식) |
+| 4: 불가 | 외부 접근 불가 | 0회 (사용자 안내) |
 
 ---
 
-## 📂 Repository Structure
+## 📂 저장소 구조
 
 ```
 argus/
-├── SKILL.md                  ← Main agent skill file (router)
-├── LICENSE                   ← MIT License
-├── README.md                 ← This file
+├── SKILL.md                  ← 메인 에이전트 스킬 파일 (라우터)
+├── LICENSE                   ← MIT 라이선스
+├── README.md                 ← 이 파일
 └── references/
-    ├── tool-setup.md         ← Firecrawl setup & usage
-    ├── search-framework.md   ← Full 4-Phase Framework
-    ├── quality-standards.md  ← Quality scoring & evaluation
-    └── firecrawl-python-sdk-quirks.md  ← SDK pitfalls reference
+    ├── tool-setup.md         ← Firecrawl 설정 및 사용법
+    ├── search-framework.md   ← 4단계 검색 프레임워크 전체
+    ├── quality-standards.md  ← 품질 평가 기준
+    └── firecrawl-python-sdk-quirks.md  ← SDK 주의사항 참고
 ```
 
 ---
 
-## 📄 License
+## 📄 라이선스
 
-This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
+이 프로젝트는 MIT 라이선스를 따릅니다 — 자세한 내용은 [LICENSE](LICENSE) 파일을 참고하세요.
 
 ---
 
-**Version:** 4.4-r1
+**버전:** 4.4-r1
