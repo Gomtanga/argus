@@ -1,6 +1,6 @@
 # Firecrawl Python SDK (4.x) — Quirks & Pitfalls
 
-Discovered while testing against Firecrawl 4.22.2 with Jiminbox endpoint at `https://firecrawl.jiminbox.com`.
+Discovered while testing against Firecrawl 4.22.2.
 
 ## Critical: API v2 vs v1 Response Shapes
 
@@ -50,7 +50,7 @@ Despite having a `title` field in the response model, `scrape_url("https://examp
 
 ## Memory cleanup
 
-The `.env` file must exist in the working directory OR be explicitly loaded. The Hermes `.env` location is `/opt/hermes/.env` (project root). A common failure mode is the file being deleted or not persisted across sessions.
+The `.env` file must exist in the working directory OR be explicitly loaded. The `.env` file should be in your project root. A common failure mode is the file being deleted or not persisted across sessions.
 
 ## Reference: Quick-Start Template
 
@@ -59,7 +59,7 @@ from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 import os
 
-load_dotenv("/opt/hermes/.env")
+load_dotenv(".env")
 
 app = FirecrawlApp(
     api_key=os.getenv("FIRECRAWL_API_KEY"),

@@ -8,9 +8,9 @@ Argus uses **Firecrawl** for web search and content extraction. Three access met
 # Install
 npm install -g firecrawl-cli
 
-# Authenticate (use Jiminbox endpoint)
+# Authenticate
 export FIRECRAWL_API_KEY="fc-your-api-key"
-export FIRECRAWL_BASE_URL="https://firecrawl.jiminbox.com"
+export FIRECRAWL_BASE_URL="https://api.firecrawl.dev"
 firecrawl login --api-key "$FIRECRAWL_API_KEY"
 
 # Verify
@@ -40,7 +40,7 @@ from firecrawl import FirecrawlApp
 from dotenv import load_dotenv
 import os
 
-load_dotenv("/opt/hermes/.env")  # ⚠️ Must load .env explicitly!
+load_dotenv(".env")  # ⚠️ Must load .env explicitly!
 
 app = FirecrawlApp(
     api_key=os.getenv("FIRECRAWL_API_KEY"),
@@ -70,7 +70,7 @@ When neither CLI nor SDK is available:
 import json, urllib.request
 
 API_KEY = "fc-your-api-key"
-BASE_URL = "https://firecrawl.jiminbox.com"
+BASE_URL = "https://api.firecrawl.dev"
 
 def _req(endpoint, payload):
     req = urllib.request.Request(

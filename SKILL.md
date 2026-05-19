@@ -11,7 +11,7 @@ license: MIT
 
 # Argus — Deep Web Research Skill
 
-Perplexity-style deep research using **Firecrawl** (via Jiminbox endpoint). Systematic search through a 4-phase framework with rigorous cross-verification.
+Perplexity-style deep research using **Firecrawl**. Systematic search through a 4-phase framework with rigorous cross-verification.
 
 > 🔧 **Tool Setup:** See [`skill_view(argus, "references/tool-setup.md")`](skill_view://argus/references/tool-setup.md) for Firecrawl CLI/SDK setup, search, scrape, and troubleshooting.
 
