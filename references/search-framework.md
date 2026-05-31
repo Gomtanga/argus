@@ -78,6 +78,8 @@ Checkpoint:
 □ Information saturation — last 2 searches yielded nothing new
 ```
 
+> ⚠️ **Phase D는 복잡도 4-5일 때만 진행** — simpler queries should terminate after Phase C.
+
 ---
 
 ## Search Termination Conditions
