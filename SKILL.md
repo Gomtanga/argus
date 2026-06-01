@@ -49,11 +49,12 @@ Perplexity-style deep research using **Firecrawl**. Systematic search through a 
 
 ## Quick Reference Links
 
-| Content | Load With |
-|---------|-----------|
-| 🔧 Firecrawl setup, search, scrape, error handling | `skill_view(argus, "references/tool-setup.md")` |
-| 🔍 4-Phase Framework + Search Methodology | `skill_view(argus, "references/search-framework.md")` |
-| 📊 Quality Standards + Evaluation | `skill_view(argus, "references/quality-standards.md")` |
+|| Content | Load With ||
+||---------|-----------||
+|| 🔧 Firecrawl setup, search, scrape, error handling | `skill_view(argus, "references/tool-setup.md")` ||
+|| 🐍 Firecrawl Python SDK quirks & pitfalls | `skill_view(argus, "references/firecrawl-python-sdk-quirks.md")` ||
+|| 🔍 4-Phase Framework + Search Methodology | `skill_view(argus, "references/search-framework.md")` ||
+|| 📊 Quality Standards + Evaluation | `skill_view(argus, "references/quality-standards.md")` ||
 
 ---
 

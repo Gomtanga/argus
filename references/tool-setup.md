@@ -10,7 +10,7 @@ npm install -g firecrawl-cli
 
 # Authenticate
 export FIRECRAWL_API_KEY="fc-your-api-key"
-export FIRECRAWL_BASE_URL="https://api.firecrawl.dev"
+export FIRECRAWL_API_URL="https://api.firecrawl.dev"
 firecrawl login --api-key "$FIRECRAWL_API_KEY"
 
 # Verify
@@ -36,40 +36,39 @@ firecrawl --status
 ## Method 2: Python SDK (Fallback)
 
 ```python
-from firecrawl import FirecrawlApp
+from firecrawl import Firecrawl
 from dotenv import load_dotenv
 import os
 
 load_dotenv(".env")  # ⚠️ Must load .env explicitly!
 
-app = FirecrawlApp(
+firecrawl = Firecrawl(
     api_key=os.getenv("FIRECRAWL_API_KEY"),
-    api_url=os.getenv("FIRECRAWL_BASE_URL"),
+    api_url=os.getenv("FIRECRAWL_API_URL"),
 )
 
-# Search — ⚠️ Always call .model_dump()!
-result = app.search(query="search term", limit=5)
+# Search — use attribute access; .model_dump() when dict conversion needed
+result = firecrawl.search(query="search term", limit=5)
 data = result.model_dump()
 items = data.get("web") or []     # Can be None!
 news = data.get("news") or []     # Can be None!
 
 # Scrape — use v1 for dict-like responses
-page = app.v1.scrape_url("https://example.com")
+page = firecrawl.v1.scrape_url("https://example.com")
 content = page.model_dump()
 markdown = content.get("markdown", "")
 ```
 
-> ⚠️ **Pitfall:** `data["news"]` can be `None`, NOT an empty list. Always use `.get("news") or []`.
-> ⚠️ **Pitfall:** `app.search()` and `app.scrape()` return Pydantic models, not plain dicts. Always call `.model_dump()` to access fields.
+> ⚠️ **See [firecrawl-python-sdk-quirks.md](firecrawl-python-sdk-quirks.md) for detailed SDK version differences and pitfalls.**
 
 ## Method 3: Direct HTTP (Zero Dependencies)
 
 When neither CLI nor SDK is available:
 
 ```python
-import json, urllib.request
+import json, os, urllib.request
 
-API_KEY = "fc-your-api-key"
+API_KEY = os.environ.get("FIRECRAWL_API_KEY", "fc-your-api-key")
 BASE_URL = "https://api.firecrawl.dev"
 
 def _req(endpoint, payload):
@@ -85,12 +84,13 @@ def _req(endpoint, payload):
     with urllib.request.urlopen(req, timeout=45) as resp:
         return json.loads(resp.read().decode())
 
+# v2 엔드포인트 사용. v1 fallback이 필요한 경우 v1/search, v1/scrape 사용.
 def search(query, limit=5):
-    result = _req("v1/search", {"query": query, "limit": limit})
+    result = _req("v2/search", {"query": query, "limit": limit})
     return (result.get("data") or result.get("web")) or []
 
 def scrape(url):
-    result = _req("v1/scrape", {"url": url, "formats": ["markdown"]})
+    result = _req("v2/scrape", {"url": url, "formats": ["markdown"]})
     if "data" in result and isinstance(result["data"], dict):
         return result["data"].get("markdown", "")
     return ""

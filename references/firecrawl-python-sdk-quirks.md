@@ -1,6 +1,6 @@
 # Firecrawl Python SDK (4.x) — Quirks & Pitfalls
 
-Discovered while testing against Firecrawl 4.22.2.
+Discovered while testing against Firecrawl 4.22.2. Covers SDK class naming, response shapes, and common gotchas.
 
 ## Critical: API v2 vs v1 Response Shapes
 
@@ -8,15 +8,27 @@ Discovered while testing against Firecrawl 4.22.2.
 
 | Version | Method | Returns | Access pattern |
 |---------|--------|---------|----------------|
-| v2 (default `app.scrape()`) | `app.scrape(url)` | Pydantic `Document` model | `doc.model_dump()["markdown"]` |
-| v1 (compatibility) | `app.v1.scrape_url(url)` | Pydantic `V1ScrapeResponse` model | `resp.model_dump()["markdown"]` |
+| v2 (default `firecrawl.scrape()`) | `firecrawl.scrape(url)` | Pydantic `Document` model | `doc.model_dump()["markdown"]` |
+| v1 (compatibility) | `firecrawl.v1.scrape_url(url)` | Pydantic `V1ScrapeResponse` model | `resp.model_dump()["markdown"]` |
 
-**Pitfall:** Both return Pydantic model objects, NOT plain dicts. Always call `.model_dump()` to access fields as dict.
+**Pitfall:** Both return Pydantic model objects, NOT plain dicts. 속성 접근을 우선 사용하고 dict 변환이 필요하면 `.model_dump()` 사용.
+
+```python
+# Preferred: attribute access
+markdown = resp.markdown
+
+# When dict conversion is needed
+data = resp.model_dump()
+markdown = data.get("markdown", "")
+```
 
 ### `search()` — same in v1/v2
 
 ```python
-result = app.search(query, limit=2)
+result = firecrawl.search(query, limit=2)
+# Preferred: attribute access
+web_results = result.web or []       # attribute access
+# When dict conversion is needed:
 data = result.model_dump()
 web_results = data.get("web", [])     # list of dicts
 news_results = data.get("news") or [] # CAN BE None — handle this!
@@ -26,19 +38,19 @@ news_results = data.get("news") or [] # CAN BE None — handle this!
 
 ## `.env` Loading
 
-Firecrawl SDK reads `FIRECRAWL_API_KEY` and `FIRECRAWL_BASE_URL` from the environment. However:
+Firecrawl SDK reads `FIRECRAWL_API_KEY` and `FIRECRAWL_API_URL` from the environment. However:
 
 ```python
 # THIS FAILS — .env is NOT auto-loaded
-app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
+firecrawl = Firecrawl(api_key=os.getenv("FIRECRAWL_API_KEY"))
 
 # YOU MUST explicitly load .env first
 from dotenv import load_dotenv
 load_dotenv("/path/to/.env")
 
-app = FirecrawlApp(
+firecrawl = Firecrawl(
     api_key=os.getenv("FIRECRAWL_API_KEY"),
-    api_url=os.getenv("FIRECRAWL_BASE_URL")
+    api_url=os.getenv("FIRECRAWL_API_URL")
 )
 ```
 
@@ -55,25 +67,28 @@ The `.env` file must exist in the working directory OR be explicitly loaded. The
 ## Reference: Quick-Start Template
 
 ```python
-from firecrawl import FirecrawlApp
+from firecrawl import Firecrawl
 from dotenv import load_dotenv
 import os
 
 load_dotenv(".env")
 
-app = FirecrawlApp(
+firecrawl = Firecrawl(
     api_key=os.getenv("FIRECRAWL_API_KEY"),
-    api_url=os.getenv("FIRECRAWL_BASE_URL"),
+    api_url=os.getenv("FIRECRAWL_API_URL"),
 )
 
-# Scrape
-result = app.v1.scrape_url("https://example.com")
-data = result.model_dump()
-markdown = data.get("markdown", "")
+# Scrape — preferred: attribute access; .model_dump() when dict needed
+result = firecrawl.v1.scrape_url("https://example.com")
+markdown = result.markdown           # preferred attribute access
+# data = result.model_dump()        # use when dict conversion is needed
+# markdown = data.get("markdown", "")
 
-# Search
-search = app.search("query", limit=5)
-sd = search.model_dump()
-for item in (sd.get("web") or []):
-    print(item["title"], item["url"])
+# Search — preferred: attribute access; .model_dump() when dict needed
+search = firecrawl.search("query", limit=5)
+for item in (search.web or []):      # preferred attribute access
+    print(item.title, item.url)
+# sd = search.model_dump()           # use when dict conversion is needed
+# for item in (sd.get("web") or []):
+#     print(item["title"], item["url"])
 ```
