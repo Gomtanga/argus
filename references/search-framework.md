@@ -15,7 +15,7 @@ A.3 Architecture/Overview: "[Topic] architecture components overview"
 
 Checkpoint:
 □ 3-5 core concepts identified
-□ Key statistics secured
+□ Key statistics secured only when directly relevant and source-verifiable
 □ Gaps identified for Phase B investigation
 ```
 
@@ -33,7 +33,7 @@ B.2 Performance: "[Topic] performance benchmark metrics comparison"
 B.3 Problems: "[Topic] common problems issues limitations pitfalls"
 
 Checkpoint:
-□ 5+ quantified metrics
+□ Relevant quantified metrics collected only when reliable sources exist
 □ 3+ common problems documented
 □ Performance characteristics understood
 □ Enough depth to verify claims in Phase C
@@ -51,14 +51,17 @@ C.2 Criticism: "[Topic] review analysis pros cons limitations"
 C.3 Community Reality: "[Topic] Reddit experience real user feedback"
 
 Cross-source verification rules:
-□ Every major claim verified with 2+ independent sources
-□ Official docs prioritized over tutorials/secondary sources
+□ Every major claim classified as Verified, Supported, Anecdotal, Unverified, or Speculative
+□ Official/primary sources prioritized over tutorials/secondary sources
+□ Feature, compatibility, pricing, licensing, and security claims checked against primary sources
+□ Repeated secondary summaries are not counted as independent verification
 □ Conflicting information explicitly noted (don't hide it!)
 □ Community sentiment checked — real users vs marketing
 □ Stale content flagged by date
 ```
 
 > 💡 **Quality heuristic:** If a fact comes from a single source with no corroboration, flag it as "unverified."
+> 💡 **Confidence heuristic:** Multiple low-quality sources may move a claim from "unverified" to "reported", but not to "verified."
 > 💡 **Recency check:** Prefer 2025-2026 materials. If only older sources exist, state the date limitation.
 
 ---
@@ -75,7 +78,7 @@ D.3 Gap Fill: Additional searches for unresolved questions
 Checkpoint:
 □ 3+ alternatives compared
 □ Future outlook understood
-□ Information saturation — last 2 searches yielded nothing new
+□ No major evidence gaps remain, or remaining gaps are explicitly stated
 ```
 
 > ⚠️ **Phase D는 복잡도 4-5일 때만 진행** — simpler queries should terminate after Phase C.
@@ -87,17 +90,18 @@ Checkpoint:
 ### STOP when ALL are met:
 ```
 ✅ Clear answers to all core questions
-✅ Major claims verified from 2+ independent sources
+✅ Major claims calibrated by evidence level
 ✅ Counterarguments and limitations documented
-✅ No new information in last 2 consecutive searches
+✅ No new relevant leads in last 2 consecutive searches
 ✅ Minimum search count met (by complexity)
 ```
 
 ### CONTINUE when ANY is true:
 ```
-❌ Core numerical data missing
+❌ Directly relevant numerical data missing
 ❌ Only one perspective collected
 ❌ Latest (2025-2026) information not secured
+❌ Primary-source coverage missing for feature/API/pricing/security claims
 ❌ Obvious information gaps remain
 ```
 
